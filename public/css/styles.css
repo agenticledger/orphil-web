@@ -469,6 +469,55 @@ section + section {
   .card-grid-3 { grid-template-columns: 1fr; }
 }
 
+/* --- Testimonials --- */
+.testimonials {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-default) transparent;
+}
+
+.testimonial {
+  flex: 0 0 320px;
+  scroll-snap-align: start;
+  padding: 24px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.testimonial p {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  font-style: italic;
+}
+
+.testimonial cite {
+  font-style: normal;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: block;
+}
+
+.testimonial cite span {
+  display: block;
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+@media (max-width: 768px) {
+  .testimonial { flex: 0 0 280px; }
+}
+
 /* --- Service Detail Cards --- */
 .service-block {
   margin-bottom: 64px;
