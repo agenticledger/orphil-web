@@ -171,17 +171,10 @@ p {
   letter-spacing: -0.03em;
 }
 
-.nav-brand .brand-mark {
+.nav-brand .brand-icon {
   width: 36px;
   height: 36px;
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-dark));
   border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  font-size: 1rem;
-  color: #060a13;
 }
 
 .nav-links {
