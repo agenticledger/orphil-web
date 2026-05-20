@@ -5,30 +5,30 @@
 
 /* --- CSS Variables --- */
 :root {
-  /* Light theme (default) */
-  --bg-primary: #faf9f7;
+  /* Light theme (default) — cyan accent, matching myaiforone.com */
+  --bg-primary: #f8fafc;
   --bg-surface: #ffffff;
-  --bg-elevated: #f5f3ef;
+  --bg-elevated: #f1f5f9;
   --bg-subtle: rgba(0, 0, 0, 0.03);
   --bg-hover: rgba(0, 0, 0, 0.06);
 
-  --text-primary: #1a1a2e;
-  --text-secondary: rgba(26, 26, 46, 0.6);
-  --text-tertiary: rgba(26, 26, 46, 0.4);
-  --text-muted: rgba(26, 26, 46, 0.25);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #94a3b8;
+  --text-muted: #cbd5e1;
 
-  --accent-primary: #a67a1f;
-  --accent-light: #c9952d;
-  --accent-dark: #8a6518;
-  --accent-subtle: rgba(166, 122, 31, 0.08);
-  --accent-glow: rgba(166, 122, 31, 0.15);
+  --accent-primary: #22d3ee;
+  --accent-light: #67e8f9;
+  --accent-dark: #06b6d4;
+  --accent-subtle: rgba(34, 211, 238, 0.08);
+  --accent-glow: rgba(34, 211, 238, 0.25);
 
-  --border-default: rgba(26, 26, 46, 0.1);
-  --border-subtle: rgba(26, 26, 46, 0.05);
-  --border-strong: rgba(26, 26, 46, 0.15);
-  --border-accent: rgba(166, 122, 31, 0.25);
+  --border-default: rgba(34, 211, 238, 0.3);
+  --border-subtle: rgba(34, 211, 238, 0.1);
+  --border-strong: rgba(34, 211, 238, 0.5);
+  --border-accent: rgba(34, 211, 238, 0.4);
 
-  --nav-bg: rgba(250, 249, 247, 0.92);
+  --nav-bg: rgba(248, 250, 252, 0.92);
   --nav-blur: 16px;
   --overlay-bg: rgba(0, 0, 0, 0.4);
   --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
@@ -51,29 +51,29 @@
 }
 
 [data-theme="dark"] {
-  --bg-primary: #0a0e17;
+  --bg-primary: #060a13;
   --bg-surface: #111827;
-  --bg-elevated: #1a2235;
+  --bg-elevated: #1e293b;
   --bg-subtle: rgba(255, 255, 255, 0.04);
   --bg-hover: rgba(255, 255, 255, 0.08);
 
-  --text-primary: #f0ece4;
-  --text-secondary: rgba(240, 236, 228, 0.65);
-  --text-tertiary: rgba(240, 236, 228, 0.4);
-  --text-muted: rgba(240, 236, 228, 0.25);
+  --text-primary: #f1f5f9;
+  --text-secondary: rgba(241, 245, 249, 0.65);
+  --text-tertiary: #94a3b8;
+  --text-muted: rgba(241, 245, 249, 0.25);
 
-  --accent-primary: #c9952d;
-  --accent-light: #dbb055;
-  --accent-dark: #a67a1f;
-  --accent-subtle: rgba(201, 149, 45, 0.12);
-  --accent-glow: rgba(201, 149, 45, 0.25);
+  --accent-primary: #22d3ee;
+  --accent-light: #67e8f9;
+  --accent-dark: #06b6d4;
+  --accent-subtle: rgba(34, 211, 238, 0.12);
+  --accent-glow: rgba(34, 211, 238, 0.3);
 
-  --border-default: rgba(240, 236, 228, 0.1);
-  --border-subtle: rgba(240, 236, 228, 0.05);
-  --border-strong: rgba(240, 236, 228, 0.18);
-  --border-accent: rgba(201, 149, 45, 0.3);
+  --border-default: rgba(34, 211, 238, 0.15);
+  --border-subtle: rgba(34, 211, 238, 0.06);
+  --border-strong: rgba(34, 211, 238, 0.3);
+  --border-accent: rgba(34, 211, 238, 0.3);
 
-  --nav-bg: rgba(10, 14, 23, 0.92);
+  --nav-bg: rgba(6, 10, 19, 0.92);
   --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
 }
 
@@ -181,7 +181,7 @@ p {
   justify-content: center;
   font-weight: 800;
   font-size: 1rem;
-  color: #fff;
+  color: #060a13;
 }
 
 .nav-links {
@@ -222,7 +222,7 @@ p {
   gap: 8px;
   padding: 10px 22px;
   background: var(--accent-primary);
-  color: #fff;
+  color: #060a13;
   font-weight: 600;
   font-size: 0.875rem;
   border-radius: var(--radius-md);
@@ -232,7 +232,7 @@ p {
 
 .nav-cta:hover {
   background: var(--accent-light);
-  color: #fff;
+  color: #060a13;
   transform: translateY(-1px);
 }
 
@@ -406,12 +406,12 @@ section + section {
 
 .btn-primary {
   background: var(--accent-primary);
-  color: #fff;
+  color: #060a13;
 }
 
 .btn-primary:hover {
   background: var(--accent-light);
-  color: #fff;
+  color: #060a13;
   transform: translateY(-1px);
   box-shadow: 0 8px 24px var(--accent-glow);
 }
