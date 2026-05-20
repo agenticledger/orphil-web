@@ -1,56 +1,11 @@
 /* ============================================
    Orphil LLC — Design System
-   Executive aesthetic. Dark-first. AI-ready.
+   Executive aesthetic. Light-first. AI-ready.
    ============================================ */
 
 /* --- CSS Variables --- */
 :root {
-  /* Dark theme (default) */
-  --bg-primary: #0a0e17;
-  --bg-surface: #111827;
-  --bg-elevated: #1a2235;
-  --bg-subtle: rgba(255, 255, 255, 0.04);
-  --bg-hover: rgba(255, 255, 255, 0.08);
-
-  --text-primary: #f0ece4;
-  --text-secondary: rgba(240, 236, 228, 0.65);
-  --text-tertiary: rgba(240, 236, 228, 0.4);
-  --text-muted: rgba(240, 236, 228, 0.25);
-
-  --accent-primary: #c9952d;
-  --accent-light: #dbb055;
-  --accent-dark: #a67a1f;
-  --accent-subtle: rgba(201, 149, 45, 0.12);
-  --accent-glow: rgba(201, 149, 45, 0.25);
-
-  --border-default: rgba(240, 236, 228, 0.1);
-  --border-subtle: rgba(240, 236, 228, 0.05);
-  --border-strong: rgba(240, 236, 228, 0.18);
-  --border-accent: rgba(201, 149, 45, 0.3);
-
-  --nav-bg: rgba(10, 14, 23, 0.92);
-  --nav-blur: 16px;
-  --overlay-bg: rgba(0, 0, 0, 0.6);
-  --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
-
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
-
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-
-  --transition-fast: 150ms ease;
-  --transition-base: 250ms ease;
-  --transition-slow: 400ms ease;
-
-  --max-width: 1200px;
-  --nav-height: 72px;
-}
-
-[data-theme="light"] {
+  /* Light theme (default) */
   --bg-primary: #faf9f7;
   --bg-surface: #ffffff;
   --bg-elevated: #f5f3ef;
@@ -74,7 +29,52 @@
   --border-accent: rgba(166, 122, 31, 0.25);
 
   --nav-bg: rgba(250, 249, 247, 0.92);
+  --nav-blur: 16px;
+  --overlay-bg: rgba(0, 0, 0, 0.4);
   --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
+
+  --max-width: 1200px;
+  --nav-height: 72px;
+}
+
+[data-theme="dark"] {
+  --bg-primary: #0a0e17;
+  --bg-surface: #111827;
+  --bg-elevated: #1a2235;
+  --bg-subtle: rgba(255, 255, 255, 0.04);
+  --bg-hover: rgba(255, 255, 255, 0.08);
+
+  --text-primary: #f0ece4;
+  --text-secondary: rgba(240, 236, 228, 0.65);
+  --text-tertiary: rgba(240, 236, 228, 0.4);
+  --text-muted: rgba(240, 236, 228, 0.25);
+
+  --accent-primary: #c9952d;
+  --accent-light: #dbb055;
+  --accent-dark: #a67a1f;
+  --accent-subtle: rgba(201, 149, 45, 0.12);
+  --accent-glow: rgba(201, 149, 45, 0.25);
+
+  --border-default: rgba(240, 236, 228, 0.1);
+  --border-subtle: rgba(240, 236, 228, 0.05);
+  --border-strong: rgba(240, 236, 228, 0.18);
+  --border-accent: rgba(201, 149, 45, 0.3);
+
+  --nav-bg: rgba(10, 14, 23, 0.92);
+  --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
 }
 
 /* --- Reset & Base --- */
