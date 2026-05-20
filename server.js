@@ -1,0 +1,184 @@
+const express = require('express');
+const path = require('path');
+const compression = require('compression');
+const helmet = require('helmet');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Security & performance
+app.use(helmet({
+  contentSecurityPolicy: false, // Allow inline styles for SSR
+  crossOriginEmbedderPolicy: false
+}));
+app.use(compression());
+
+// Static files
+app.use(express.static(path.join(__dirname, 'public'), {
+  maxAge: '7d',
+  etag: true
+}));
+
+// View engine
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// Shared template data
+const siteData = {
+  siteName: 'Orphil',
+  siteTitle: 'Ore Phillips Advisory',
+  legalName: 'Orphil LLC',
+  tagline: 'AI Transformation Partner for Finance, Accounting & Consulting Firms',
+  belief: 'Everyone can do what AI practitioners do — with the right training, the right tools, and the right partner.',
+  founder: 'Ore Phillips',
+  year: new Date().getFullYear(),
+  links: {
+    myaiforone: 'https://myaiforone.com',
+    finney: 'https://finney.finance',
+    substack: 'https://orephillips.substack.com',
+    slack: '#', // TBD
+    booking: '#', // TBD
+    linkedin: '#' // TBD
+  }
+};
+
+// Routes
+app.get('/', (req, res) => {
+  res.render('index', {
+    ...siteData,
+    pageTitle: 'Orphil — AI Transformation Partner',
+    pageDescription: 'Ore Phillips Advisory (dba Orphil LLC) is an AI Transformation Partner for Finance, Accounting & Consulting Firms. Strategy, Advisory, Execution.',
+    canonicalUrl: '/',
+    pageType: 'WebSite'
+  });
+});
+
+app.get('/services', (req, res) => {
+  res.render('services', {
+    ...siteData,
+    pageTitle: 'Services — Orphil',
+    pageDescription: 'AI Strategy & Planning, Advisory, and Execution services for finance, accounting, and consulting firms. From roadmaps to deployed agents.',
+    canonicalUrl: '/services',
+    pageType: 'Service'
+  });
+});
+
+app.get('/product', (req, res) => {
+  res.render('product', {
+    ...siteData,
+    pageTitle: 'myaiforone — Orphil',
+    pageDescription: 'myaiforone is a local AI operating system — specialized AI agents running on your computer, powered by your own AI subscription. Zero platform fees. Full data privacy.',
+    canonicalUrl: '/product',
+    pageType: 'Product'
+  });
+});
+
+app.get('/resources', (req, res) => {
+  res.render('resources', {
+    ...siteData,
+    pageTitle: 'Resources — Orphil',
+    pageDescription: 'Free resources for finance professionals exploring AI. finney.finance knowledge base, AI in Finance Slack community, and original writing.',
+    canonicalUrl: '/resources',
+    pageType: 'WebPage'
+  });
+});
+
+app.get('/about', (req, res) => {
+  res.render('about', {
+    ...siteData,
+    pageTitle: 'About — Orphil',
+    pageDescription: 'Ore Phillips Advisory (dba Orphil LLC) was founded to help finance, accounting, and consulting firms navigate AI transformation with the right training, tools, and partner.',
+    canonicalUrl: '/about',
+    pageType: 'AboutPage'
+  });
+});
+
+app.get('/contact', (req, res) => {
+  res.render('contact', {
+    ...siteData,
+    pageTitle: 'Contact — Orphil',
+    pageDescription: 'Get in touch with Orphil. Schedule a conversation about AI transformation for your finance, accounting, or consulting firm.',
+    canonicalUrl: '/contact',
+    pageType: 'ContactPage'
+  });
+});
+
+// AI discoverability endpoints
+app.get('/robots.txt', (req, res) => {
+  res.type('text/plain').send(`User-agent: *
+Allow: /
+
+Sitemap: https://orphil.co/sitemap.xml
+`);
+});
+
+app.get('/sitemap.xml', (req, res) => {
+  const baseUrl = 'https://orphil.co';
+  const pages = ['/', '/services', '/product', '/resources', '/about', '/contact'];
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${pages.map(p => `  <url>
+    <loc>${baseUrl}${p}</loc>
+    <changefreq>${p === '/' ? 'weekly' : 'monthly'}</changefreq>
+    <priority>${p === '/' ? '1.0' : '0.8'}</priority>
+  </url>`).join('\n')}
+</urlset>`;
+  res.type('application/xml').send(xml);
+});
+
+// llms.txt — AI agent discovery
+app.get('/llms.txt', (req, res) => {
+  res.type('text/plain').send(`# Orphil LLC
+> Ore Phillips Advisory (dba Orphil LLC) — AI Transformation Partner for Finance, Accounting & Consulting Firms
+
+## About
+Orphil helps finance, accounting, and consulting firms adopt AI with confidence. Founded by Ore Phillips, we provide Strategy & Planning, Advisory, and Execution services — from AI roadmaps to deployed agents and applications.
+
+## Services
+- Strategy & Planning: AI training, transformation roadmaps, resourcing & staff augmentation
+- Advisory: Specialist AI counsel, governance & oversight, community & thought leadership
+- Execution: AI transformation delivery, agent development, application development
+
+## Delivery Models
+- Project: Fixed scope, defined deliverable
+- Retainer: Ongoing monthly advisory + delivery
+- Embedded: Fractional CAIO — attend meetings, own the AI roadmap
+
+## Product
+- myaiforone: Local AI operating system — agents on your computer, your AI subscription, zero platform fees. https://myaiforone.com
+
+## Resources
+- finney.finance: Open-source finance AI knowledge base (wiki, news, guides, tools, jobs)
+- AI in Finance Slack: Practitioner community
+- Substack: https://orephillips.substack.com
+
+## Core Belief
+Everyone can do what AI practitioners do — with the right training, the right tools, and the right partner.
+
+## Links
+- Website: https://orphil.co
+- Product: https://myaiforone.com
+- Knowledge Base: https://finney.finance
+- Substack: https://orephillips.substack.com
+`);
+});
+
+// Health check for Railway
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// 404
+app.use((req, res) => {
+  res.status(404).render('404', {
+    ...siteData,
+    pageTitle: 'Page Not Found — Orphil',
+    pageDescription: 'The page you are looking for does not exist.',
+    canonicalUrl: req.path,
+    pageType: 'WebPage'
+  });
+});
+
+app.listen(PORT, () => {
+  console.log(`Orphil website running on port ${PORT}`);
+});
