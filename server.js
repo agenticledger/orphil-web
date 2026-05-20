@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const compression = require('compression');
 const helmet = require('helmet');
+const { Resend } = require('resend');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,6 +13,7 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false
 }));
 app.use(compression());
+app.use(express.urlencoded({ extended: true }));
 
 // Static files
 app.use(express.static(path.join(__dirname, 'public'), {
@@ -100,6 +102,38 @@ app.get('/contact', (req, res) => {
     pageDescription: 'Get in touch with Orphil. Schedule a conversation about AI transformation for your finance, accounting, or consulting firm.',
     canonicalUrl: '/contact',
     pageType: 'ContactPage'
+  });
+});
+
+app.post('/contact', async (req, res) => {
+  const { name, email, company, message } = req.body;
+
+  try {
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
+    await resend.emails.send({
+      from: 'Orphil Website <onboarding@resend.dev>',
+      replyTo: email,
+      to: 'ore@agenticledger.ai',
+      subject: `New inquiry from ${name}${company ? ` (${company})` : ''}`,
+      html: `<h3>New Contact Form Submission</h3>
+<p><strong>Name:</strong> ${name}</p>
+<p><strong>Email:</strong> ${email}</p>
+<p><strong>Firm:</strong> ${company || 'Not provided'}</p>
+<hr>
+<p>${message.replace(/\n/g, '<br>')}</p>`
+    });
+  } catch (err) {
+    console.error('Email send failed:', err.message);
+  }
+
+  res.render('contact', {
+    ...siteData,
+    pageTitle: 'Contact — Orphil',
+    pageDescription: 'Get in touch with Orphil.',
+    canonicalUrl: '/contact',
+    pageType: 'ContactPage',
+    formSuccess: true
   });
 });
 
