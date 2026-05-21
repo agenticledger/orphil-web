@@ -39,7 +39,7 @@ const siteData = {
     finney: 'https://finney.finance',
     substack: 'https://orephillips.substack.com',
     slack: '#', // TBD
-    booking: '#', // TBD
+    booking: 'https://calendly.com/ore-agenticledger/30min',
     linkedin: '#' // TBD
   }
 };
