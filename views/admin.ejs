@@ -108,8 +108,10 @@
         <textarea id="agentInstructionsInput" rows="6" placeholder="You are..."></textarea>
       </div>
       <div class="form-group">
-        <label for="agentModel">Default Model (optional)</label>
-        <input type="text" id="agentModelInput" placeholder="e.g. claude-sonnet-4-6">
+        <label for="agentModelInput">Default Model (optional)</label>
+        <select id="agentModelInput">
+          <option value="">Use platform default</option>
+        </select>
       </div>
       <div class="modal-actions">
         <button class="btn-secondary" id="btnCancelAgent">Cancel</button>

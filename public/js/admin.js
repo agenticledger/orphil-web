@@ -111,13 +111,30 @@
     }
   }
 
+  function populateAgentModelSelect(currentValue) {
+    const $sel = document.getElementById('agentModelInput');
+    $sel.innerHTML = '<option value="">Use platform default</option>';
+    providers.forEach(p => {
+      const grp = document.createElement('optgroup');
+      grp.label = p.name;
+      p.models.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m.id;
+        opt.textContent = m.name;
+        grp.appendChild(opt);
+      });
+      $sel.appendChild(grp);
+    });
+    if (currentValue) $sel.value = currentValue;
+  }
+
   document.getElementById('btnCreateAgent').addEventListener('click', () => {
     document.getElementById('agentModalTitle').textContent = 'Create Agent';
     document.getElementById('agentEditId').value = '';
     document.getElementById('agentNameInput').value = '';
     document.getElementById('agentDescInput').value = '';
     document.getElementById('agentInstructionsInput').value = '';
-    document.getElementById('agentModelInput').value = '';
+    populateAgentModelSelect('');
     $agentModal.classList.remove('hidden');
   });
 
@@ -174,7 +191,7 @@
       document.getElementById('agentNameInput').value = a.name;
       document.getElementById('agentDescInput').value = a.description;
       document.getElementById('agentInstructionsInput').value = a.instructions;
-      document.getElementById('agentModelInput').value = a.defaultModel || '';
+      populateAgentModelSelect(a.defaultModel || '');
       $agentModal.classList.remove('hidden');
     } catch {
       toast('Failed to load agent', 'error');
