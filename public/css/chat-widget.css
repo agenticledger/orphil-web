@@ -92,6 +92,31 @@
   opacity: 0.8;
 }
 
+.ow-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.ow-header-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  opacity: 0.7;
+  transition: opacity 0.15s, background 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ow-header-btn:hover {
+  opacity: 1;
+  background: rgba(255,255,255,0.15);
+}
+
 .ow-close {
   background: none;
   border: none;
@@ -271,6 +296,22 @@
 
 .ow-send:hover { opacity: 0.85; }
 .ow-send:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ─── Widget Size Modes ──────────────────────────────────────────── */
+.ow-panel.ow-size-default {
+  width: 380px;
+  height: 520px;
+}
+
+.ow-panel.ow-size-medium {
+  width: 480px;
+  height: 620px;
+}
+
+.ow-panel.ow-size-large {
+  width: 600px;
+  height: 75vh;
+}
 
 /* ─── Mobile ──────────────────────────────────────────────────────── */
 @media (max-width: 480px) {

@@ -23,7 +23,15 @@
             <div class="ow-status">AI Advisory Assistant</div>
           </div>
         </div>
-        <button class="ow-close" id="owClose" aria-label="Close chat">&times;</button>
+        <div class="ow-header-actions">
+          <button class="ow-header-btn" id="owClear" aria-label="Clear conversation" title="Clear conversation">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+          </button>
+          <button class="ow-header-btn" id="owResize" aria-label="Resize chat" title="Resize chat">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+          </button>
+          <button class="ow-close" id="owClose" aria-label="Close chat">&times;</button>
+        </div>
       </div>
       <div class="ow-messages" id="owMessages">
         <div class="ow-welcome">
@@ -43,6 +51,8 @@
   const $fab = document.getElementById('owFab');
   const $panel = document.getElementById('owPanel');
   const $close = document.getElementById('owClose');
+  const $clear = document.getElementById('owClear');
+  const $resize = document.getElementById('owResize');
   const $messages = document.getElementById('owMessages');
   const $input = document.getElementById('owInput');
   const $send = document.getElementById('owSend');
@@ -69,6 +79,26 @@
 
   $fab.addEventListener('click', toggle);
   $close.addEventListener('click', toggle);
+
+  // ─── Clear Conversation ──────────────────────────────────────────
+  $clear.addEventListener('click', () => {
+    conversationId = null;
+    $messages.innerHTML = `
+      <div class="ow-welcome">
+        <p>Hi! I'm Orphil's AI assistant. Ask me anything about our AI transformation services.</p>
+      </div>
+    `;
+  });
+
+  // ─── Resize ──────────────────────────────────────────────────────
+  const OW_SIZES = ['ow-size-default', 'ow-size-medium', 'ow-size-large'];
+  let owSizeIndex = 0;
+
+  $resize.addEventListener('click', () => {
+    $panel.classList.remove(OW_SIZES[owSizeIndex]);
+    owSizeIndex = (owSizeIndex + 1) % OW_SIZES.length;
+    $panel.classList.add(OW_SIZES[owSizeIndex]);
+  });
 
   // ─── Init Agent ────────────────────────────────────────────────────
   async function initAgent() {

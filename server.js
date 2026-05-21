@@ -18,7 +18,7 @@ app.use(express.json({ limit: '10mb' }));
 
 // Static files
 app.use(express.static(path.join(__dirname, 'public'), {
-  maxAge: '7d',
+  maxAge: '1h',
   etag: true
 }));
 
