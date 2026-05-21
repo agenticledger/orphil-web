@@ -255,6 +255,15 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Global error handler — returns JSON for API, HTML for pages
+app.use((err, req, res, next) => {
+  console.error(`[ERROR] ${req.method} ${req.path}:`, err.message, err.stack?.split('\n').slice(0, 3).join('\n'));
+  if (req.path.startsWith('/api/')) {
+    return res.status(500).json({ ok: false, error: err.message || 'Internal server error' });
+  }
+  res.status(500).send('Internal Server Error');
+});
+
 // 404
 app.use((req, res) => {
   res.status(404).render('404', {
