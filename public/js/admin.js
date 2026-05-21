@@ -53,6 +53,7 @@
     $loginScreen.style.display = 'none';
     $dashboard.style.display = 'block';
     loadAgents();
+    loadKbAgents();
     loadLlmConfig();
     loadSettings();
   }
@@ -377,6 +378,132 @@
       if (json.ok) {
         toast('Setting removed', 'success');
         loadSettings();
+      }
+    } catch {
+      toast('Connection error', 'error');
+    }
+  };
+
+  // ─── Knowledge Base ────────────────────────────────────────────────
+  const $kbAgentSelect = document.getElementById('kbAgentSelect');
+  const $kbDocPanel = document.getElementById('kbDocPanel');
+  const $docList = document.getElementById('docList');
+  const $docModal = document.getElementById('docModal');
+  let currentKbAgentId = null;
+
+  async function loadKbAgents() {
+    try {
+      const res = await fetch(`${API}/agents`, { headers: headers() });
+      const json = await res.json();
+      if (json.ok && json.data.length > 0) {
+        $kbAgentSelect.innerHTML = '<option value="">Select an agent to manage its documents...</option>' +
+          json.data.map(a => `<option value="${a.id}">${escapeHtml(a.name)}</option>`).join('');
+      } else {
+        $kbAgentSelect.innerHTML = '<option value="">No agents yet — create one in the Agents tab first</option>';
+      }
+    } catch {
+      // silently fail
+    }
+  }
+
+  $kbAgentSelect.addEventListener('change', () => {
+    currentKbAgentId = $kbAgentSelect.value || null;
+    if (currentKbAgentId) {
+      $kbDocPanel.style.display = 'block';
+      loadDocuments();
+    } else {
+      $kbDocPanel.style.display = 'none';
+    }
+  });
+
+  async function loadDocuments() {
+    if (!currentKbAgentId) return;
+    $docList.innerHTML = '<p class="empty-state">Loading...</p>';
+    try {
+      const res = await fetch(`${API}/agents/${currentKbAgentId}/documents`, { headers: headers() });
+      const json = await res.json();
+      if (!json.ok || json.data.length === 0) {
+        $docList.innerHTML = '<p class="empty-state">No documents yet. Click "+ Add Document" to give this agent knowledge.</p>';
+        return;
+      }
+      $docList.innerHTML = json.data.map(d => `
+        <div class="agent-card">
+          <div class="agent-card-info">
+            <h4>${escapeHtml(d.name)}</h4>
+            <p>${escapeHtml(d.sourceType)} &middot; ${d.chunkCount || 0} chunks &middot; ${new Date(d.createdAt).toLocaleDateString()}</p>
+          </div>
+          <div class="agent-card-actions">
+            <button class="btn-sm danger" onclick="window._adminDeleteDoc('${d.id}')">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    } catch {
+      $docList.innerHTML = '<p class="empty-state">Failed to load documents</p>';
+    }
+  }
+
+  document.getElementById('btnAddDoc').addEventListener('click', () => {
+    document.getElementById('docNameInput').value = '';
+    document.getElementById('docContentInput').value = '';
+    $docModal.classList.remove('hidden');
+  });
+
+  document.getElementById('btnCancelDoc').addEventListener('click', () => {
+    $docModal.classList.add('hidden');
+  });
+
+  document.getElementById('btnSaveDoc').addEventListener('click', async () => {
+    const name = document.getElementById('docNameInput').value.trim();
+    const content = document.getElementById('docContentInput').value.trim();
+
+    if (!name || !content) {
+      toast('Name and content are required', 'error');
+      return;
+    }
+
+    const btn = document.getElementById('btnSaveDoc');
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+
+    try {
+      const res = await fetch(`${API}/agents/${currentKbAgentId}/documents`, {
+        method: 'POST',
+        headers: headers(),
+        body: JSON.stringify({ name, content, sourceType: 'text' }),
+      });
+      const json = await res.json();
+
+      if (json.ok) {
+        $docModal.classList.add('hidden');
+        const msg = json.data.ingested ? 'Document saved & embedded' : 'Document saved (add OpenAI key to enable embeddings)';
+        toast(msg, 'success');
+        loadDocuments();
+        loadAgents();
+      } else {
+        toast(json.error || 'Failed to save document', 'error');
+      }
+    } catch {
+      toast('Connection error', 'error');
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Save Document';
+  });
+
+  window._adminDeleteDoc = async function (id) {
+    if (!confirm('Delete this document? This cannot be undone.')) return;
+    try {
+      const res = await fetch(`${API}/agents/${currentKbAgentId}/documents/${id}`, {
+        method: 'DELETE',
+        headers: headers(),
+      });
+      const json = await res.json();
+      if (json.ok) {
+        toast('Document deleted', 'success');
+        loadDocuments();
+        loadAgents();
+      } else {
+        toast(json.error || 'Failed to delete', 'error');
       }
     } catch {
       toast('Connection error', 'error');

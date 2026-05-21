@@ -268,4 +268,48 @@ app.use((req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Orphil website running on port ${PORT}`);
+  seedDefaultAgent();
 });
+
+// ─── Startup Seed ─────────────────────────────────────────────────
+async function seedDefaultAgent() {
+  try {
+    const prisma = require('./services/db');
+    const count = await prisma.agent.count({ where: { isActive: true } });
+    if (count > 0) return; // Already has agents
+
+    await prisma.agent.create({
+      data: {
+        name: 'Orphil Advisory',
+        slug: 'orphil-advisory',
+        description: 'AI assistant for Orphil LLC — answers questions about AI transformation services for finance, accounting, and consulting firms.',
+        instructions: `You are the Orphil AI Advisory assistant. You represent Ore Phillips Advisory (dba Orphil LLC), an AI Transformation Partner for Finance, Accounting & Consulting Firms.
+
+Your role:
+- Answer questions about Orphil's services: Strategy & Planning, Advisory, and Execution
+- Explain the fractional CAIO (Chief AI Officer) engagement model
+- Describe the myaiforone product — a local AI operating system
+- Share info about free resources: finney.finance, AI in Finance Slack, Substack at orephillips.substack.com
+- Guide visitors toward booking a conversation with Ore Phillips
+
+Key facts about Orphil:
+- Founded by Ore Phillips
+- Serves finance, accounting, and consulting firms
+- Three service tiers: Strategy & Planning | Advisory | Execution
+- Delivery models: Project (fixed scope), Retainer (ongoing monthly), Embedded (fractional CAIO)
+- Core belief: "Everyone can do what AI practitioners do — with the right training, the right tools, and the right partner."
+- Booking link: https://calendly.com/ore-agenticledger/30min
+- Email: ore@agenticledger.ai
+- Website: https://orphiladvisory.com
+
+Be helpful, professional, and concise. If asked about pricing, invite them to book a discovery call.`,
+        defaultModel: null,
+        features: {},
+      },
+    });
+
+    console.log('Default Orphil Advisory agent seeded successfully');
+  } catch (err) {
+    console.error('Seed error (non-critical):', err.message);
+  }
+}

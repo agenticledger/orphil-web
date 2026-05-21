@@ -17,15 +17,16 @@
   <!-- Admin Dashboard (hidden until login) -->
   <div class="admin-container" id="dashboardScreen" style="display:none">
     <h1>Agent Platform</h1>
-    <p>Manage agents, LLM providers, and platform settings.</p>
+    <p>Manage agents, knowledge base, LLM providers, and platform settings.</p>
 
     <div class="admin-tabs">
       <button class="admin-tab active" data-tab="agents">Agents</button>
+      <button class="admin-tab" data-tab="kb">Knowledge Base</button>
       <button class="admin-tab" data-tab="llm">LLM Config</button>
       <button class="admin-tab" data-tab="settings">Settings</button>
     </div>
 
-    <!-- ─── Agents Tab ──────────────────────────────────────────── -->
+    <!-- Agents Tab -->
     <div class="tab-panel active" id="tab-agents">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
         <h3 style="margin:0;color:var(--text-primary)">Agents</h3>
@@ -34,7 +35,29 @@
       <div id="agentList"><p class="empty-state">Loading...</p></div>
     </div>
 
-    <!-- ─── LLM Config Tab ──────────────────────────────────────── -->
+    <!-- Knowledge Base Tab -->
+    <div class="tab-panel" id="tab-kb">
+      <div class="admin-card">
+        <h3>Knowledge Base</h3>
+        <p class="card-desc">Add documents to give the AI agent knowledge about your firm, services, and content. Documents are chunked and searched at query time (RAG). Embeddings require an OpenAI API key.</p>
+        <div class="form-group">
+          <label for="kbAgentSelect">Select Agent</label>
+          <select id="kbAgentSelect">
+            <option value="">Select an agent to manage its documents...</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="kbDocPanel" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <h3 style="margin:0;color:var(--text-primary)">Documents</h3>
+          <button class="btn-sm" id="btnAddDoc">+ Add Document</button>
+        </div>
+        <div id="docList"><p class="empty-state">Loading...</p></div>
+      </div>
+    </div>
+
+    <!-- LLM Config Tab -->
     <div class="tab-panel" id="tab-llm">
       <div class="admin-card">
         <h3>Active Model</h3>
@@ -57,7 +80,7 @@
       </div>
     </div>
 
-    <!-- ─── Settings Tab ────────────────────────────────────────── -->
+    <!-- Settings Tab -->
     <div class="tab-panel" id="tab-settings">
       <div class="admin-card">
         <h3>Platform Settings</h3>
@@ -67,7 +90,7 @@
     </div>
   </div>
 
-  <!-- ─── Agent Modal ───────────────────────────────────────────── -->
+  <!-- Agent Modal -->
   <div class="modal-overlay hidden" id="agentModal">
     <div class="modal">
       <h3 id="agentModalTitle">Create Agent</h3>
@@ -91,6 +114,26 @@
       <div class="modal-actions">
         <button class="btn-secondary" id="btnCancelAgent">Cancel</button>
         <button class="btn-primary" id="btnSaveAgent">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Document Modal -->
+  <div class="modal-overlay hidden" id="docModal">
+    <div class="modal">
+      <h3>Add Document</h3>
+      <div class="form-group">
+        <label for="docNameInput">Document Name</label>
+        <input type="text" id="docNameInput" placeholder="e.g. Services Overview, About Ore Phillips">
+      </div>
+      <div class="form-group">
+        <label for="docContentInput">Content</label>
+        <textarea id="docContentInput" rows="12" placeholder="Paste document content here — this becomes the agent's knowledge..."></textarea>
+      </div>
+      <p style="font-size:12px;color:var(--text-tertiary);margin-top:-4px">If an OpenAI API key is configured, the document will be automatically embedded for semantic search.</p>
+      <div class="modal-actions">
+        <button class="btn-secondary" id="btnCancelDoc">Cancel</button>
+        <button class="btn-primary" id="btnSaveDoc">Save Document</button>
       </div>
     </div>
   </div>
