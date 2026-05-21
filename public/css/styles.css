@@ -472,27 +472,29 @@ section + section {
 /* --- Testimonials --- */
 .testimonials {
   display: flex;
-  gap: 20px;
+  gap: 16px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
-  padding-bottom: 8px;
+  padding-bottom: 12px;
   scrollbar-width: thin;
   scrollbar-color: var(--border-default) transparent;
 }
 
 .testimonial {
-  flex: 0 0 320px;
+  flex: 0 0 300px;
   scroll-snap-align: start;
   padding: 24px;
   background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border-default);
+  border-left: 3px solid var(--accent-primary);
   border-radius: var(--radius-md);
+  box-shadow: var(--card-shadow);
 }
 
 .testimonial p {
-  font-size: 0.9rem;
-  line-height: 1.6;
+  font-size: 0.875rem;
+  line-height: 1.65;
   color: var(--text-secondary);
   margin-bottom: 16px;
   font-style: italic;
@@ -500,8 +502,8 @@ section + section {
 
 .testimonial cite {
   font-style: normal;
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.82rem;
+  font-weight: 700;
   color: var(--text-primary);
   display: block;
 }
@@ -509,13 +511,13 @@ section + section {
 .testimonial cite span {
   display: block;
   font-weight: 400;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--text-tertiary);
-  margin-top: 2px;
+  margin-top: 3px;
 }
 
 @media (max-width: 768px) {
-  .testimonial { flex: 0 0 280px; }
+  .testimonial { flex: 0 0 260px; }
 }
 
 /* --- Service Detail Cards --- */
