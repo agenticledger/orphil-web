@@ -16,15 +16,22 @@
     <div class="chat-main">
       <div class="chat-header" id="chatHeader">
         <div class="agent-info">
-          <div class="agent-avatar">O</div>
+          <div class="agent-avatar" id="agentAvatar">O</div>
           <div>
-            <h2 id="agentName">Orphil</h2>
+            <select id="agentSelect" class="agent-select" title="Switch agent">
+              <option value="">Loading agents...</option>
+            </select>
             <p id="agentDescription">AI Advisory Assistant</p>
           </div>
         </div>
-        <button class="btn-icon" id="btnToggleSidebar" title="Toggle sidebar">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
-        </button>
+        <div class="header-actions">
+          <button class="btn-icon" id="btnChatSize" title="Change chat size">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+          </button>
+          <button class="btn-icon" id="btnToggleSidebar" title="Toggle sidebar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+          </button>
+        </div>
       </div>
 
       <div class="chat-messages" id="chatMessages">

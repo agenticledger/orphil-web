@@ -9,10 +9,32 @@
   const $btnSend = document.getElementById('btnSend');
   const $btnNewChat = document.getElementById('btnNewChat');
   const $conversationList = document.getElementById('conversationList');
-  const $agentName = document.getElementById('agentName');
+  const $agentSelect = document.getElementById('agentSelect');
+  const $agentAvatar = document.getElementById('agentAvatar');
   const $agentDescription = document.getElementById('agentDescription');
   const $sidebar = document.getElementById('chatSidebar');
   const $btnToggle = document.getElementById('btnToggleSidebar');
+  const $btnChatSize = document.getElementById('btnChatSize');
+  const $chatContainer = document.querySelector('.chat-container');
+
+  let allAgents = [];
+
+  // ─── Chat Size Toggle ──────────────────────────────────────────────
+  const SIZES = ['size-half', 'size-three-quarter', 'size-full'];
+  const SIZE_ICONS = [
+    '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>',
+    '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 4v16"/></svg>',
+    '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v3a2 2 0 01-2 2H3m18 0h-3a2 2 0 01-2-2V3m0 18v-3a2 2 0 012-2h3M3 16h3a2 2 0 012 2v3"/></svg>',
+  ];
+  let currentSizeIndex = 0;
+
+  $btnChatSize.addEventListener('click', () => {
+    $chatContainer.classList.remove(SIZES[currentSizeIndex]);
+    currentSizeIndex = (currentSizeIndex + 1) % SIZES.length;
+    $chatContainer.classList.add(SIZES[currentSizeIndex]);
+    $btnChatSize.innerHTML = SIZE_ICONS[currentSizeIndex];
+    $btnChatSize.title = ['Half width', 'Three-quarter width', 'Full width'][currentSizeIndex];
+  });
 
   // ─── Init ──────────────────────────────────────────────────────────
   async function init() {
@@ -20,17 +42,51 @@
       const res = await fetch(`${API}/agents`);
       const json = await res.json();
       if (json.ok && json.data.length > 0) {
-        // Prefer the designated platform agent, fallback to first
-        const agent = json.data.find(a => a.slug === 'orphil-advisory') || json.data[0];
-        currentAgentId = agent.id;
-        $agentName.textContent = agent.name;
-        $agentDescription.textContent = agent.description;
+        allAgents = json.data;
+        $agentSelect.innerHTML = allAgents.map(a =>
+          `<option value="${a.id}">${escapeHtml(a.name)}</option>`
+        ).join('');
+
+        // Prefer orphil-advisory, fallback to first
+        const preferred = allAgents.find(a => a.slug === 'orphil-advisory') || allAgents[0];
+        $agentSelect.value = preferred.id;
+        selectAgent(preferred);
+      } else {
+        $agentSelect.innerHTML = '<option value="">No agents available</option>';
       }
     } catch {
-      // Agent list unavailable — chat will fail gracefully on send
+      $agentSelect.innerHTML = '<option value="">Failed to load agents</option>';
     }
     loadConversations();
   }
+
+  function selectAgent(agent) {
+    currentAgentId = agent.id;
+    $agentAvatar.textContent = agent.branding?.avatar || agent.name.charAt(0);
+    $agentDescription.textContent = agent.description;
+    // Update welcome message
+    const welcome = $messages.querySelector('.welcome-message');
+    if (welcome) {
+      welcome.querySelector('.agent-avatar').textContent = agent.branding?.avatar || agent.name.charAt(0);
+      welcome.querySelector('h3').textContent = `Welcome to ${agent.name}`;
+      welcome.querySelector('p').textContent = agent.description;
+    }
+  }
+
+  $agentSelect.addEventListener('change', () => {
+    const agent = allAgents.find(a => a.id === $agentSelect.value);
+    if (!agent) return;
+    selectAgent(agent);
+    // Start fresh conversation with new agent
+    currentConversationId = null;
+    $messages.innerHTML = `
+      <div class="welcome-message">
+        <div class="agent-avatar large">${escapeHtml(agent.branding?.avatar || agent.name.charAt(0))}</div>
+        <h3>Welcome to ${escapeHtml(agent.name)}</h3>
+        <p>${escapeHtml(agent.description)}</p>
+      </div>
+    `;
+  });
 
   // ─── Conversations ────────────────────────────────────────────────
   async function loadConversations() {
@@ -270,11 +326,13 @@
 
   $btnNewChat.addEventListener('click', () => {
     currentConversationId = null;
+    const agent = allAgents.find(a => a.id === currentAgentId) || { name: 'Orphil', description: 'AI Advisory Assistant' };
+    const avatar = agent.branding?.avatar || agent.name.charAt(0);
     $messages.innerHTML = `
       <div class="welcome-message">
-        <div class="agent-avatar large">O</div>
-        <h3>Welcome to Orphil</h3>
-        <p>I'm Orphil's AI assistant. I can help you learn about our AI transformation services for finance, accounting, and consulting firms. Ask me anything.</p>
+        <div class="agent-avatar large">${escapeHtml(avatar)}</div>
+        <h3>Welcome to ${escapeHtml(agent.name)}</h3>
+        <p>${escapeHtml(agent.description)}</p>
       </div>
     `;
     loadConversations();
