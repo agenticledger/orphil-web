@@ -4,7 +4,7 @@
   "description": "Ore Phillips Advisory (dba Orphil LLC) — AI Transformation Partner for Finance, Accounting & Consulting Firms",
   "main": "server.js",
   "scripts": {
-    "build": "prisma generate && prisma migrate deploy",
+    "build": "prisma generate",
     "start": "node server.js",
     "dev": "node --watch server.js",
     "postinstall": "prisma generate"
