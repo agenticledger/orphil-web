@@ -76,7 +76,8 @@
       const res = await fetch(`${API}/agents`);
       const json = await res.json();
       if (json.ok && json.data.length > 0) {
-        agentId = json.data[0].id;
+        const agent = json.data.find(a => a.slug === 'orphil-advisory') || json.data[0];
+        agentId = agent.id;
       }
     } catch {
       // silently fail

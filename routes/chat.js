@@ -2,12 +2,57 @@ const { Router } = require('express');
 const prisma = require('../services/db');
 const { buildContext } = require('../services/contextBuilder');
 const { getProviderForModel } = require('../services/llm');
-const { streamWithTools, executeWithTools } = require('../services/toolExecutor');
+const { streamWithTools, executeWithTools, registerToolHandler } = require('../services/toolExecutor');
 const { DEEP_TOOLS } = require('../services/deepTools');
 const { MEMORY_TOOLS } = require('../services/memoryTools');
 const { encrypt, decrypt } = require('../services/encryption');
+const { listTools, callTool } = require('../services/mcpClient');
 
 const router = Router();
+
+// Load MCP tools from agent capabilities
+async function loadMcpToolsForAgent(agentId) {
+  const agentCaps = await prisma.agentCapability.findMany({
+    where: { agentId },
+    include: { capability: true },
+  });
+
+  const mcpTools = [];
+
+  for (const ac of agentCaps) {
+    const cap = ac.capability;
+    if (!cap.isActive || !cap.serverUrl) continue;
+
+    const bearerToken = ac.config?.bearerToken || cap.config?.bearerToken || null;
+    const prefix = `mcp_${cap.slug}__`;
+
+    try {
+      const tools = await listTools(cap.serverUrl, bearerToken);
+
+      for (const tool of tools) {
+        mcpTools.push({
+          name: `${prefix}${tool.name}`,
+          description: `[${cap.name}] ${tool.description || tool.name}`,
+          inputSchema: tool.inputSchema || { type: 'object', properties: {} },
+        });
+      }
+
+      // Register handler for this capability's tools
+      registerToolHandler(prefix, async (toolName, input) => {
+        const originalName = toolName.slice(prefix.length);
+        try {
+          return await callTool(cap.serverUrl, originalName, input, bearerToken);
+        } catch (err) {
+          return JSON.stringify({ error: `MCP tool failed: ${err.message}` });
+        }
+      });
+    } catch (err) {
+      console.error(`Failed to load MCP tools for ${cap.name}:`, err.message);
+    }
+  }
+
+  return mcpTools;
+}
 
 // Resolve API key for a provider
 async function resolveApiKey(provider) {
@@ -197,8 +242,9 @@ router.post('/:conversationId/stream', async (req, res, next) => {
       openaiApiKey: await resolveApiKey('openai') ?? undefined,
     });
 
-    // Load built-in tools (no platform tools for Orphil yet)
-    const tools = [...DEEP_TOOLS, ...MEMORY_TOOLS];
+    // Load built-in tools + MCP tools from agent capabilities
+    const mcpTools = await loadMcpToolsForAgent(conversation.agentId).catch(() => []);
+    const tools = [...DEEP_TOOLS, ...MEMORY_TOOLS, ...mcpTools];
 
     // Set up SSE
     res.writeHead(200, {
@@ -343,7 +389,8 @@ router.post('/:conversationId/message', async (req, res, next) => {
       openaiApiKey: await resolveApiKey('openai') ?? undefined,
     });
 
-    const tools = [...DEEP_TOOLS, ...MEMORY_TOOLS];
+    const mcpTools = await loadMcpToolsForAgent(conversation.agentId).catch(() => []);
+    const tools = [...DEEP_TOOLS, ...MEMORY_TOOLS, ...mcpTools];
 
     const { result } = await executeWithTools({
       messages: ctx.messages,

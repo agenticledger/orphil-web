@@ -93,7 +93,12 @@ router.post('/', requireAdmin, async (req, res, next) => {
     });
 
     res.status(201).json({ ok: true, data: agent });
-  } catch (err) { next(err); }
+  } catch (err) {
+    if (err.code === 'P2002') {
+      return res.status(409).json({ ok: false, error: `An agent with a similar name already exists (slug "${slugify(req.body.name)}" is taken). Use a different name.` });
+    }
+    next(err);
+  }
 });
 
 // PATCH /api/agents/:id — update agent (admin only)

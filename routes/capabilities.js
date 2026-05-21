@@ -111,22 +111,48 @@ router.post('/:id/test', requireAdmin, async (req, res, next) => {
       return res.status(404).json({ ok: false, error: 'Capability not found' });
     }
 
-    if (capability.type !== 'external' || !capability.serverUrl) {
-      return res.status(400).json({ ok: false, error: 'Only external capabilities with a server URL can be tested' });
+    if (!capability.serverUrl) {
+      return res.status(400).json({ ok: false, error: 'No server URL configured' });
     }
 
-    try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 10000);
-      const response = await fetch(capability.serverUrl, {
-        method: 'GET',
-        signal: controller.signal,
-      });
-      clearTimeout(timeout);
-      res.json({ ok: true, data: { reachable: true, status: response.status } });
-    } catch {
-      res.json({ ok: true, data: { reachable: false, error: 'Connection failed' } });
+    const { testConnection, clearCache } = require('../services/mcpClient');
+    const bearerToken = req.body?.bearerToken || capability.config?.bearerToken || null;
+
+    clearCache(capability.serverUrl);
+    const result = await testConnection(capability.serverUrl, bearerToken);
+
+    res.json({
+      ok: true,
+      data: {
+        reachable: result.ok,
+        toolCount: result.tools?.length || 0,
+        tools: (result.tools || []).map(t => ({ name: t.name, description: t.description })),
+        error: result.error || null,
+      },
+    });
+  } catch (err) { next(err); }
+});
+
+// POST /api/capabilities/test-url — test an unsaved MCP server URL
+router.post('/test-url', requireAdmin, async (req, res, next) => {
+  try {
+    const { serverUrl, bearerToken } = req.body;
+    if (!serverUrl) {
+      return res.status(400).json({ ok: false, error: 'serverUrl is required' });
     }
+
+    const { testConnection } = require('../services/mcpClient');
+    const result = await testConnection(serverUrl, bearerToken || null);
+
+    res.json({
+      ok: true,
+      data: {
+        reachable: result.ok,
+        toolCount: result.tools?.length || 0,
+        tools: (result.tools || []).map(t => ({ name: t.name, description: t.description })),
+        error: result.error || null,
+      },
+    });
   } catch (err) { next(err); }
 });
 

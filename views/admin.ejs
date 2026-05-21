@@ -22,6 +22,7 @@
     <div class="admin-tabs">
       <button class="admin-tab active" data-tab="agents">Agents</button>
       <button class="admin-tab" data-tab="kb">Knowledge Base</button>
+      <button class="admin-tab" data-tab="mcp">MCP Servers</button>
       <button class="admin-tab" data-tab="llm">LLM Config</button>
       <button class="admin-tab" data-tab="settings">Settings</button>
     </div>
@@ -55,6 +56,16 @@
         </div>
         <div id="docList"><p class="empty-state">Loading...</p></div>
       </div>
+    </div>
+
+    <!-- MCP Servers Tab -->
+    <div class="tab-panel" id="tab-mcp">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <h3 style="margin:0;color:var(--text-primary)">MCP Servers</h3>
+        <button class="btn-sm" id="btnAddMcp">+ Add Server</button>
+      </div>
+      <p style="font-size:13px;color:var(--text-secondary);margin:0 0 20px">External MCP servers provide tools to your agents. Add a server URL, test it, then connect it to one or more agents.</p>
+      <div id="mcpList"><p class="empty-state">Loading...</p></div>
     </div>
 
     <!-- LLM Config Tab -->
@@ -116,6 +127,32 @@
       <div class="modal-actions">
         <button class="btn-secondary" id="btnCancelAgent">Cancel</button>
         <button class="btn-primary" id="btnSaveAgent">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MCP Server Modal -->
+  <div class="modal-overlay hidden" id="mcpModal">
+    <div class="modal">
+      <h3 id="mcpModalTitle">Add MCP Server</h3>
+      <input type="hidden" id="mcpEditId">
+      <div class="form-group">
+        <label>Server Name</label>
+        <input type="text" id="mcpNameInput" placeholder="e.g. Finney Finance Tools">
+      </div>
+      <div class="form-group">
+        <label>Server URL</label>
+        <input type="text" id="mcpUrlInput" placeholder="https://example.com/mcp">
+      </div>
+      <div class="form-group">
+        <label>Bearer Token <span style="font-weight:400;color:var(--text-tertiary)">(optional)</span></label>
+        <input type="password" id="mcpTokenInput" placeholder="Auth token if required by the server">
+      </div>
+      <div id="mcpTestResult" style="display:none;margin-top:4px;padding:10px 12px;background:var(--bg-elevated);border-radius:var(--radius-sm);font-size:12px;line-height:1.5"></div>
+      <div class="modal-actions">
+        <button class="btn-secondary" id="btnCancelMcp">Cancel</button>
+        <button class="btn-secondary" id="btnTestMcpModal">Test Connection</button>
+        <button class="btn-primary" id="btnSaveMcp">Save Server</button>
       </div>
     </div>
   </div>

@@ -397,6 +397,35 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* ─── MCP Agent Tags ──────────────────────────────────────────────── */
+.mcp-agent-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  padding: 2px 8px;
+  border-radius: 100px;
+  color: var(--text-secondary);
+}
+
+.mcp-tag-remove {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: 0;
+  font-size: 13px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}
+
+.mcp-tag-remove:hover {
+  color: #ef4444;
+}
+
 /* ─── Empty State ─────────────────────────────────────────────────── */
 .empty-state {
   font-size: 14px;

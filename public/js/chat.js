@@ -20,7 +20,8 @@
       const res = await fetch(`${API}/agents`);
       const json = await res.json();
       if (json.ok && json.data.length > 0) {
-        const agent = json.data[0];
+        // Prefer the designated platform agent, fallback to first
+        const agent = json.data.find(a => a.slug === 'orphil-advisory') || json.data[0];
         currentAgentId = agent.id;
         $agentName.textContent = agent.name;
         $agentDescription.textContent = agent.description;
