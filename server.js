@@ -142,12 +142,12 @@ app.get('/robots.txt', (req, res) => {
   res.type('text/plain').send(`User-agent: *
 Allow: /
 
-Sitemap: https://orphil.co/sitemap.xml
+Sitemap: https://orphiladvisory.com/sitemap.xml
 `);
 });
 
 app.get('/sitemap.xml', (req, res) => {
-  const baseUrl = 'https://orphil.co';
+  const baseUrl = 'https://orphiladvisory.com';
   const pages = ['/', '/services', '/product', '/resources', '/about', '/contact'];
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -190,7 +190,7 @@ Orphil helps finance, accounting, and consulting firms adopt AI with confidence.
 Everyone can do what AI practitioners do — with the right training, the right tools, and the right partner.
 
 ## Links
-- Website: https://orphil.co
+- Website: https://orphiladvisory.com
 - Product: https://myaiforone.com
 - Knowledge Base: https://finney.finance
 - Substack: https://orephillips.substack.com
