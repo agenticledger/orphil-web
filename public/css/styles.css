@@ -722,6 +722,18 @@ section + section {
   align-items: center;
   font-size: 0.8rem;
   color: var(--text-muted);
+  position: relative;
+}
+
+.footer-shield {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 20px;
+  height: 20px;
+  opacity: 0;
+  cursor: default;
+  z-index: 1;
 }
 
 @media (max-width: 768px) {

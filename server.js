@@ -14,6 +14,7 @@ app.use(helmet({
 }));
 app.use(compression());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' }));
 
 // Static files
 app.use(express.static(path.join(__dirname, 'public'), {
@@ -195,6 +196,58 @@ Everyone can do what AI practitioners do — with the right training, the right 
 - Knowledge Base: https://finney.finance
 - Substack: https://orephillips.substack.com
 `);
+});
+
+// ─── Admin Login ───────────────────────────────────────────────────
+const { generateToken, ADMIN_PASSWORD } = require('./middleware/adminAuth');
+
+app.post('/api/admin/login', (req, res) => {
+  const { password } = req.body;
+  if (!password || password !== ADMIN_PASSWORD) {
+    return res.status(401).json({ ok: false, error: 'Invalid password' });
+  }
+  res.json({ ok: true, data: { token: generateToken() } });
+});
+
+// ─── Agent Platform API Routes ─────────────────────────────────────
+const agentsRouter = require('./routes/agents');
+const chatRouter = require('./routes/chat');
+const agentDocumentsRouter = require('./routes/agentDocuments');
+const agentMemoryRouter = require('./routes/agentMemory');
+const capabilitiesRouter = require('./routes/capabilities');
+const agentCapabilitiesRouter = require('./routes/agentCapabilities');
+const llmConfigRouter = require('./routes/llmConfig');
+const settingsRouter = require('./routes/settings');
+
+app.use('/api/agents', agentsRouter);
+app.use('/api/chat', chatRouter);
+app.use('/api/agents', agentDocumentsRouter);
+app.use('/api/agents', agentMemoryRouter);
+app.use('/api/capabilities', capabilitiesRouter);
+app.use('/api/agents', agentCapabilitiesRouter);
+app.use('/api/llm-config', llmConfigRouter);
+app.use('/api/settings', settingsRouter);
+
+// ─── Chat page (SSR) ──────────────────────────────────────────────
+app.get('/chat', (req, res) => {
+  res.render('chat', {
+    ...siteData,
+    pageTitle: 'Chat with Orphil — AI Assistant',
+    pageDescription: 'Chat with Orphil, our AI assistant that knows our firm and can help with questions about AI transformation for finance and accounting.',
+    canonicalUrl: '/chat',
+    pageType: 'WebPage'
+  });
+});
+
+// ─── Admin panel (SSR) ────────────────────────────────────────────
+app.get('/admin', (req, res) => {
+  res.render('admin', {
+    ...siteData,
+    pageTitle: 'Admin — Orphil',
+    pageDescription: 'Orphil platform administration.',
+    canonicalUrl: '/admin',
+    pageType: 'WebPage'
+  });
 });
 
 // Health check for Railway
